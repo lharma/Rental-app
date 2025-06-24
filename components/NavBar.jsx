@@ -11,9 +11,9 @@ const NavBar = () => {
   return (
     <>
       {pathName !== '/SigIn' && pathName !=='/SignUp' && (
-      <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between relative z-50">
+      <nav className="bg-white shadow-md px-6 py-4 flex items-center fixed top-0 left-0 w-full justify-between  z-50">
       {/* Logo */}
-      <div className="text-2xl font-bold text-blue-600">RentX</div>
+      <div className="text-2xl font-bold text-blue-600"><Link href='/LandingPage'>RentX</Link></div>
 
    
       <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
