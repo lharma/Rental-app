@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 const page = () => {
   return (
     <div>
-      
+      <h1>hello</h1>
     </div>
   )
 }

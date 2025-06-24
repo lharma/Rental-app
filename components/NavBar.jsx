@@ -11,7 +11,7 @@ export default function TopNav() {
     <nav className="bg-white shadow-md px-6 py-4 relative z-50">
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <div className="text-2xl font-bold text-blue-600">RentX</div>
+        <div className="text-2xl font-bold text-blue-600 hever:cursor-pointer">RentX</div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
@@ -53,7 +53,6 @@ export default function TopNav() {
               <div className="absolute right-0 bg-white shadow-lg rounded mt-2 py-2 w-40">
                 <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</Link>
                 <Link href="/listings/new" className="block px-4 py-2 hover:bg-gray-100">Post a Listing</Link>
-                <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">Log Out</button>
               </div>
             )}
           </div>
@@ -84,8 +83,8 @@ export default function TopNav() {
 
           <Link href="/profile" className="block">My Profile</Link>
           <Link href="/listings/new" className="block">Post a Listing</Link>
-          <button className="text-left">Sign Up</button>
-          <button className="text-left">Sign In</button>
+          <button className="text-left"><Link href='/SignUp' > Sign Up</Link></button>
+          <button className="text-left"><Link href='/SignIn'>Sign In</Link></button>
         </div>
       )}
     </nav>
