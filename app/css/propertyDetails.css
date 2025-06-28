@@ -1,0 +1,169 @@
+
+* {
+    margin: 0;
+       color: black;
+}
+
+
+.property-info {
+    width: 70%;
+    justify-self: center;
+}
+
+.main-header {
+    padding-bottom: 2rem;
+    text-align: center;
+    background-color: lightgray;
+}
+.main-header h1{
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: Roboto-R;
+}
+.main-header p{
+    font-size: 1.2rem;
+    color: grey;
+    margin: 1rem 0;
+}
+
+/* Listing Progress*/
+
+.listing-progress {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    gap: 15px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0; /* slate-200 */
+box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    margin-top: 2rem;
+}
+.listing-progress-title {
+    font-weight: bold;
+}
+
+.listing-progress-pages {
+    display: flex;
+    gap: 20px;
+}
+
+/* Property Overview*/
+form {
+ margin: 2rem 0;
+}
+
+.property-overview {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0; /* slate-200 */
+box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    margin-bottom: 2rem;
+    border-radius: 5px;
+}
+
+.fieldset-heading {
+    padding: 1rem 2rem;
+    width: 100%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #f4f9ff;
+    margin-bottom: 2rem;
+    flex-basis: 100%; /* Forces h1 to take full row */
+}
+
+label {
+    font-family: Roboto-R;
+    padding: 0 2rem;
+}
+
+input, textarea, select {
+    border: 2px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Roboto;
+}
+
+input::placeholder, textarea::placeholder {
+    color: grey;
+}
+ .title-input {
+    margin: 5px 2rem 2rem;
+}
+.desc-input {
+    height: 8rem;
+    margin: 5px 2rem 2rem;
+    resize: none;
+}
+
+/* Property Overview*/
+
+.property-details {
+    margin: 2rem 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; /* Allow items to break onto a new line */
+    flex-direction: row;
+    border: 1px solid #e2e8f0; /* slate-200 */
+box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    border-radius: 5px;
+ 
+}
+
+.small-section {
+    display: flex;
+    flex-direction: column;
+}
+ .small-input {
+    width: 12rem;
+    margin: 5px 0 2rem 2rem;
+}
+
+.property-type-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 5px 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.grid-item {
+    color: grey;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 1rem 0;
+}
+.grid-item:hover {
+    color:black;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+
+.location-input {
+    margin: 5px 2rem 0;
+}
+
+.location-input-p {
+    font-size: 0.825rem;
+    margin:5px 2rem 2rem;
+    font-weight: bold;
+    color: green;
+}
+
+button {
+    display: flex;
+    justify-self: center;
+    padding: 10px 20px;
+    color: black;
+    border:1px solid black;
+    border-radius: 15px;
+}
+
+.image-title {
+    text-align: center;
+    color: rgb(66, 66, 66);
+    margin-bottom: 2rem;
+}   
+ 

@@ -1,19 +1,21 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-
+import { usePathname } from 'next/navigation';
 export default function TopNav() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [showListingsMenu, setShowListingsMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-
+  const pathname = usePathname();
   return (
-    <nav className="bg-white shadow-md px-6 py-4 relative z-50">
+    <>
+      {pathname !== '/propertyDetails' &&  pathname !=='/SignUp' &&(
+        <nav className="bg-white shadow-md px-6 py-4 relative z-50">
       <div className="flex items-center justify-between">
-        {/* Logo */}
+      
         <div className="text-2xl font-bold text-blue-600 hever:cursor-pointer">RentX</div>
 
-        {/* Desktop Navigation */}
+      
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
           <Link href="/">Home</Link>
 
@@ -88,5 +90,6 @@ export default function TopNav() {
         </div>
       )}
     </nav>
-  );
-}
+        )}
+      </>
+  )}
