@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation';
 
 const SignUpPage = () => {
   const [form, setForm] = useState({
@@ -27,13 +26,11 @@ const SignUpPage = () => {
       return
     }
 
-    const { error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        data: { username: form.username }
-      }
-    })
+  const { error, data } = await supabase.auth.signUp({
+  email: form.email.trim(),
+  password: form.password,
+  // username is not a standard field for Supabase Auth, so it will be ignored
+});
 
     if (!error) {
       router.push('/SignIn')

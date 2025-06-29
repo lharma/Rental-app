@@ -1,95 +1,83 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { usePathname } from 'next/navigation';
 export default function TopNav() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [showListingsMenu, setShowListingsMenu] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const pathname = usePathname();
+  const [showServicesMenu, setShowServicesMenu] = useState(false);
+  const pathName = usePathname()
   return (
     <>
-      {pathname !== '/propertyDetails' &&  pathname !=='/SignUp' &&(
-        <nav className="bg-white shadow-md px-6 py-4 relative z-50">
-      <div className="flex items-center justify-between">
-      
-        <div className="text-2xl font-bold text-blue-600 hever:cursor-pointer">RentX</div>
-
-      
-        <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
-          <Link href="/">Home</Link>
-
-          <div className="relative">
-            <button
-              onClick={() => setShowListingsMenu(!showListingsMenu)}
-              className="hover:text-blue-600 focus:outline-none"
-            >
-              Listings ▾
-            </button>
-            {showListingsMenu && (
-              <div className="absolute bg-white shadow-md rounded mt-2 py-2 w-40 z-10">
-                <Link href="/listings" className="block px-4 py-2 hover:bg-gray-100">All Listings</Link>
-                <Link href="/listings/apartments" className="block px-4 py-2 hover:bg-gray-100">Apartments</Link>
-                <Link href="/listings/houses" className="block px-4 py-2 hover:bg-gray-100">Houses</Link>
-              </div>
-            )}
+      {pathName !== '/propertyDetails' && pathName !== '/SignUp'&& (
+        <header className="bg-white shadow-md sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-3">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="text-2xl font-bold text-blue-600">RentX</Link>
           </div>
-
-          <Link href="/agents">Agents</Link>
-          <Link href="/contact">Contact</Link>
-        </div>
-
-        {/* Desktop Right Side */}
-        <div className="hidden md:flex items-center space-x-4 relative">
-          <div className="relative flex space-x-5 justify-center items-center"> 
-            <button
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="w-8 h-8 rounded-full bg-gray-300 text-white font-bold flex items-center justify-center"
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">Home</Link>
+            <Link href="/listings" className="text-gray-700 hover:text-blue-600 font-medium">Listings</Link>
+            
+            <div className="relative">
+              <button
+                onClick={() => setShowServicesMenu(!showServicesMenu)}
+                className="text-gray-700 hover:text-blue-600 font-medium flex items-center focus:outline-none"
+              >
+                Services <FontAwesomeIcon icon={faChevronDown} className="ml-1 text-xs" />
+              </button>
+              {showServicesMenu && (
+                <div className="absolute bg-white mt-2 py-2 w-48 shadow-lg rounded-md z-50">
+                  <Link href="#" className="block px-4 py-2 text-gray-700 hover:bg-blue-50">Property Management</Link>
+                  <Link href="#" className="block px-4 py-2 text-gray-700 hover:bg-blue-50">Rental Assistance</Link>
+                  <Link href="#" className="block px-4 py-2 text-gray-700 hover:bg-blue-50">Home Valuation</Link>
+                </div>
+              )}
+            </div>
+            
+            <Link href="/agents" className="text-gray-700 hover:text-blue-600 font-medium">Agents</Link>
+            <Link href="/contact" className="text-gray-700 hover:text-blue-600 font-medium">Contact</Link>
+          </nav>
+          
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium">Login</Link>
+            <Link href="/register" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-medium">Register</Link>
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="text-gray-700 focus:outline-none"
             >
-              L
+              <FontAwesomeIcon icon={faBars} className="text-xl" />
             </button>
-             <div>
-            <button className='py-3 px-4 bg-[rgba(0,0,225,0.7)] rounded-sm hover:bg-[rgba(103,103,187,0.7)] transition-bg duration-300 '> Sign Up</button>
-        </div>
-            {showProfileMenu && (
-              <div className="absolute right-0 bg-white shadow-lg rounded mt-2 py-2 w-40">
-                <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100">My Profile</Link>
-                <Link href="/listings/new" className="block px-4 py-2 hover:bg-gray-100">Post a Listing</Link>
-              </div>
-            )}
           </div>
         </div>
-
-       
-        <div className="md:hidden">
-          <button
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="text-2xl text-gray-600"
-          >
-            ☰
-          </button>
-        </div>
-      </div>
-
-     
-      {isMobileOpen && (
-        <div className="mt-4 md:hidden flex flex-col space-y-3 text-gray-700 font-medium">
-          <Link href="/" className="block">Home</Link>
-          <Link href="/listings" className="block">All Listings</Link>
-          <Link href="/listings/apartments" className="block">Apartments</Link>
-          <Link href="/listings/houses" className="block">Houses</Link>
-          <Link href="/agents" className="block">Agents</Link>
-          <Link href="/contact" className="block">Contact</Link>
-
-          <hr />
-
-          <Link href="/profile" className="block">My Profile</Link>
-          <Link href="/listings/new" className="block">Post a Listing</Link>
-          <button className="text-left"><Link href='/SignUp' > Sign Up</Link></button>
-          <button className="text-left"><Link href='/SignIn'>Sign In</Link></button>
-        </div>
-      )}
-    </nav>
+        
+        {/* Mobile Menu */}
+        {isMobileOpen && (
+          <div className="md:hidden mt-4 pb-4">
+            <Link href="/" className="block py-2 text-gray-700 hover:text-blue-600">Home</Link>
+            <Link href="/listings" className="block py-2 text-gray-700 hover:text-blue-600">Listings</Link>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-blue-600">Services</Link>
+            <Link href="/agents" className="block py-2 text-gray-700 hover:text-blue-600">Agents</Link>
+            <Link href="/contact" className="block py-2 text-gray-700 hover:text-blue-600">Contact</Link>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <Link href="/login" className="block py-2 text-gray-700 hover:text-blue-600">Login</Link>
+              <Link href="/register" className="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-center">Register</Link>
+            </div>
+          </div>
         )}
-      </>
-  )}
+      </div>
+    </header>
+      )}
+    </>
+  );
+}

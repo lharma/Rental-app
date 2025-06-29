@@ -1,12 +1,16 @@
-import React from 'react'
+import HeroSection from '@/components/HeroSection';
+import Listings from '@/components/Listings';
+//import Testimonials from '@/components/Testimonials';
+import React from 'react';
 
-const page = () => {
+const HomePage = () => {
   return (
-    <div className='w-full h-screen flex justify-center items-center'>
-         
-      <h1> Hello langding page</h1>
-    </div>
-  )
-}
+    <main className="min-h-screen">
+      <HeroSection />
+      <Listings />
+      {/* <Testimonials /> */}
+    </main>
+  );
+};
 
-export default page
+export default HomePage;
