@@ -1,6 +1,7 @@
 import HeroSection from '@/components/HeroSection';
+import HowItWorks from '@/components/HowItWorks';
 import Listings from '@/components/Listings';
-//import Testimonials from '@/components/Testimonials';
+import Testimonials from '@/components/Testimonials';
 import React from 'react';
 
 const HomePage = () => {
@@ -8,7 +9,8 @@ const HomePage = () => {
     <main className="min-h-screen">
       <HeroSection />
       <Listings />
-      {/* <Testimonials /> */}
+      <HowItWorks />
+      <Testimonials />
     </main>
   );
 };
