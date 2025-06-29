@@ -1,12 +1,16 @@
-import HeroSection from '@/components/HeroSection'
-import React from 'react'
+import HeroSection from '@/components/HeroSection';
+import Listings from '@/components/Listings';
+//import Testimonials from '@/components/Testimonials';
+import React from 'react';
 
-const page = () => {
+const HomePage = () => {
   return (
-    <div className=''>
+    <main className="min-h-screen">
       <HeroSection />
-    </div>
-  )
-}
+      <Listings />
+      {/* <Testimonials /> */}
+    </main>
+  );
+};
 
-export default page
+export default HomePage;
