@@ -1,22 +1,47 @@
 'use client';
 import { useRef, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
-export default function StyledImageUploadBox() {
+export default function ImageUploadSection({ onUpload }) {
   const fileInputRef = useRef();
   const [images, setImages] = useState([]);
 
-  const handleFiles = (files) => {
+  const handleFiles = async (files) => {
     const validImages = Array.from(files).filter(file =>
       file.type.startsWith('image/')
     );
 
-    validImages.forEach(file => {
+    for (let file of validImages) {
       const reader = new FileReader();
+
+      // Show preview
       reader.onload = () => {
         setImages(prev => [...prev, reader.result]);
       };
       reader.readAsDataURL(file);
-    });
+
+      // Upload to Supabase
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `properties/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('property-images')
+        .upload(filePath, file);
+
+      if (error) {
+        console.error('Upload failed:', error.message);
+      } else {
+        const { data: publicData } = supabase
+          .storage
+          .from('property-images')
+          .getPublicUrl(filePath);
+
+        if (onUpload) {
+          onUpload(publicData.publicUrl); // return uploaded image URL to parent
+        }
+      }
+    }
   };
 
   return (
@@ -25,22 +50,17 @@ export default function StyledImageUploadBox() {
         className="w-full max-w-3xl px-6 py-10 border-2 border-dashed border-gray-300 rounded-xl text-center cursor-pointer hover:border-blue-400 transition space-y-6"
         onClick={() => fileInputRef.current.click()}
       >
-        {/* Upload Icon */}
         <div className="flex justify-center">
           <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
         </div>
-
-        {/* Text */}
         <p className="text-gray-700 text-lg font-medium py-4">
           Drop your images here, or click to browse
         </p>
         <p className="text-sm text-gray-400 pb-6">
           Supports JPG, PNG, WebP up to 10MB each
         </p>
-
-        {/* Add Button */}
         <div className="flex justify-center">
           <label
             htmlFor="fileUpload"
@@ -61,7 +81,6 @@ export default function StyledImageUploadBox() {
         </div>
       </div>
 
-      {/* Image Previews */}
       {images.length > 0 && (
         <div className="mt-6 grid grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((src, i) => (

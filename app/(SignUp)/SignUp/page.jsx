@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation';
+
 const SignUpPage = () => {
   const [form, setForm] = useState({
     username: '',
