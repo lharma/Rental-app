@@ -14,7 +14,7 @@ export default function layout({ children }) {
       <body>
         <NavBar />
         {children}
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   );
