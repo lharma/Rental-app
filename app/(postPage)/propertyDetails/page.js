@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 function PropertyDetails() {
-   
     const [regionData, setRegionData] = useState({ region: '', municipal: '' });
     const [houseDetails, setHouseDetails] = useState({
         title: '',
@@ -22,9 +21,10 @@ function PropertyDetails() {
     const [imageUrls, setImageUrls] = useState([]);
 
     const router = useRouter();
-const handleImageUpload = (url) => {
-  setImageUrls(prev => [...prev, url]);
-};
+
+    const handleImageUpload = (url) => {
+        setImageUrls(prev => [...prev, url]);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,55 +41,67 @@ const handleImageUpload = (url) => {
         }));
     };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    try {
-    const dataToInsert = {
-        title: houseDetails.title,
-        description: houseDetails.description,
-        price: houseDetails.price === "" ? null : Number(houseDetails.price),
-        gps: houseDetails.gps,
-        bedroom: houseDetails.bedroom === "" ? null : Number(houseDetails.bedroom),
-        bathroom: houseDetails.bathroom === "" ? null : Number(houseDetails.bathroom),
-        region: regionData.region,
-        municipal: regionData.municipal,
-        image_urls: imageUrls, 
-    };
+        try {
+            if (
+                !houseDetails.title ||
+                !houseDetails.description ||
+                !houseDetails.price ||
+                !houseDetails.gps ||
+                !regionData.region ||
+                !regionData.municipal
+            ) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+            // const { data: session } = await supabase.auth.getSession();
+            // const userEmail = session?.session?.user?.email;
 
-    const { error } = await supabase.from("apartment").insert([dataToInsert]);
-
-    if (!error) {
-        router.push('/UserProfile')
-    }
-} catch (err) {
-    
+            const dataToInsert = {
+                title: houseDetails.title,
+                description: houseDetails.description,
+                price: houseDetails.price === "" ? null : Number(houseDetails.price),
+                gps: houseDetails.gps,
+                bedroom: houseDetails.bedroom === "" ? null : Number(houseDetails.bedroom),
+                bathroom: houseDetails.bathroom === "" ? null : Number(houseDetails.bathroom),
+                region: regionData.region,
+                municipal: regionData.municipal,
+                image_urls: imageUrls,
+                // userEmail: userEmail,
+            };
+const { error } = await supabase.from("apartment").insert([dataToInsert]);
+if (error) {
+    console.log('Supabase insert error:', error); // <-- log the full error
 }
-setHouseDetails({
-   title: '',
-description: '',
-price: '',
-gps: '',
-bedroom: '',
-bathroom: '',
-area: '',
-propertyType: '',
-})
-};
-
+        } catch (err) {
+            // Optionally handle error
+            console.log('error', err.message)
+        }
+        setHouseDetails({
+            title: '',
+            description: '',
+            price: '',
+            gps: '',
+            bedroom: '',
+            bathroom: '',
+            area: '',
+            propertyType: '',
+        });
+    };
 
     return (
         <>
             <div className="relative overflow-hidden flex justify-center bg-white">
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900/5 to-slate-800/5"></div>
-                <div className="relative px-4 py-4 sm:px-8 lg:px-12">
-                    <div className="mx-auto max-w-4xl text-center">
-                        <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
-                            List Your
-                            <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent"> </span>
-                            Property
-                        </h1>
-                    </div>
+                <div className="relative px-4 py-4 sm:px-8 lg:px-12"></div>
+                <div className="mx-auto max-w-4xl text-center">
+                    <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
+                        List Your
+                        <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent text-[]"> </span>
+                        Property
+                    </h1>
                 </div>
             </div>
 
@@ -202,7 +214,6 @@ propertyType: '',
                                 }`}
                                 onClick={() => handlePropertyTypeSelect('House')}
                             >
-                                <i className="ri-home-fill text-black text-2xl"></i>
                                 <span>House</span>
                             </button>
                             <button
@@ -212,7 +223,6 @@ propertyType: '',
                                 }`}
                                 onClick={() => handlePropertyTypeSelect('Apartment')}
                             >
-                                <i className="ri-building-fill text-black text-2xl"></i>
                                 <span>Apartment</span>
                             </button>
                         </div>
