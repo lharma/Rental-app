@@ -71,7 +71,7 @@ export default function TopNav() {
             <Link href="/contact" className="block py-2 text-gray-700 hover:text-blue-600">Contact</Link>
             <div className="mt-4 pt-4 border-t border-gray-200">
               <Link href="/login" className="block py-2 text-gray-700 hover:text-blue-600">Login</Link>
-              <Link href="/register" className="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-center">Register</Link>
+              <Link href="/SignUp" className="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-center">Register</Link>
             </div>
           </div>
         )}

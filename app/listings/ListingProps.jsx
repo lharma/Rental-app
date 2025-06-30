@@ -2,8 +2,31 @@
 import { FaChevronDown, FaFilter, FaMapMarkerAlt, FaBed, FaBath, FaRulerCombined } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabaseClient';
+import { useState, useEffect } from 'react';
 
 const ListingProps = () => {
+
+    const [apartments, setApartments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchApartments = async () => {
+      const { data, error } = await supabase
+        .from('apartment')                   .select('*')                 
+               .order('created_at', { ascending: false }); 
+
+      if (error) {
+        console.error('Fetch error:', error.message);
+      } else {
+        setApartments(data);
+      }
+
+      setLoading(false);
+    }; 
+
+    fetchApartments();
+  }, []);
   const properties = [
     {
       id: 1,

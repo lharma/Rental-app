@@ -103,51 +103,32 @@ import { supabase } from '@/lib/supabaseClient';
 export default function ImageUploadSection({ onUpload }) {
   const fileInputRef = useRef();
   const [previews, setPreviews] = useState([]);
-  const [uploadedURLs, setUploadedURLs] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFiles = async (files) => {
-    const validImages = Array.from(files).filter(file =>
-      file.type.startsWith('image/')
-    );
 
-    for (let file of validImages) {
-      // Preview logic
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPreviews(prev => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
+  const uploadImage = async () => {
+    try {
+      setIsUploading(true)
+      if (!file) throw new Error('No file selected')
 
-      // Upload to Supabase
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `properties/${fileName}`;
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `uploads/${fileName}`
 
-      const { data, error } = await supabase.storage
-        .from('property-images')
-        .upload(filePath, file);
+      let { error } = await supabase.storage
+        .from('images') // bucket name
+        .upload(filePath, file)
 
-      if (error) {
-        console.error('Upload failed:', error.message);
-        continue;
-      }
+      if (error) throw error
 
-      const { data: publicData } = supabase
-        .storage
-        .from('property-images')
-        .getPublicUrl(filePath);
-
-      if (publicData?.publicUrl) {
-        const newURL = publicData.publicUrl;
-
-        setUploadedURLs(prev => {
-          const updated = [...prev, newURL];
-          if (onUpload) onUpload(updated); // send all URLs to parent
-          return updated;
-        });
-      }
+      alert('Uploaded successfully!')
+    } catch (error) {
+      console.error('Error uploading:', error.message)
+    } finally {
+      setIsUploading(false)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full px-4">
@@ -171,7 +152,7 @@ export default function ImageUploadSection({ onUpload }) {
         </p>
 
         {/* Upload button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center" onClick={uploadImage}>
           <label
             htmlFor="fileUpload"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
@@ -180,21 +161,17 @@ export default function ImageUploadSection({ onUpload }) {
             Add Images
           </label>
           <input
-            ref={fileInputRef}
-            id="fileUpload"
             type="file"
-            className="hidden"
             accept="image/*"
-            multiple
-            onChange={(e) => handleFiles(e.target.files)}
+            onChange={(e) => setImageFile(e.target.files[0])}
           />
         </div>
       </div>
 
       {/* Image previews */}
-      {previews.length > 0 && (
+      {imageFile.length > 0 && (
         <div className="mt-6 grid grid-cols-3 md:grid-cols-4 gap-4">
-          {previews.map((src, i) => (
+          {imageFile.map((src, i) => (
             <img
               key={i}
               src={src}
