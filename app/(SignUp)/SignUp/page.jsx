@@ -136,9 +136,10 @@
 import React, { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Image from 'next/image'
 
-const SignUpPage = async () => {
+const SignUpPage =  () => {
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -154,40 +155,43 @@ const SignUpPage = async () => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const varifyEmail = await supabase.auth.getUser()
-  const handleSubmit = async (e) => {
-  e.preventDefault()
-  setError('')
-  setSuccess('')
+ 
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setSuccess('');
   if (form.password !== form.confirmPassword) {
-    setError('Passwords do not match')
-    return
+    setError('Passwords do not match');
+    return;
   }
 
   const { data, error } = await supabase.auth.signUp({
     email: form.email.trim(),
     password: form.password,
-  })
+  });
 
-  // Check if email already exists
-  if ( form.email ===varifyEmail) {
-    setError('This email is already in use. Please log in or use a different email.')
-    return
-  }
-
+  // Supabase will return an error if the email is already in use
   if (error) {
-    setError(error.message)
-    return
+    if (error.message.toLowerCase().includes('already')) {
+      setError('This email is already in use. Please log in or use a different email.');
+    } else {
+      setError(error.message);
+    }
+    return;
   }
 
   if (data?.user?.email) {
     setSuccess(
       `A confirmation email has been sent to ${data.user.email}. Please verify before logging in.`
-    )
+    );
+    await supabase.from('users').insert([
+      { id: data.user.id, email: data.user.email }
+    ]);
+    router.push('/SignIn');
   } else {
-    setSuccess(`Check your email to confirm your account.`)
+    setSuccess(`Check your email to confirm your account.`);
   }
-}
+};
 
 
   return (
@@ -272,17 +276,18 @@ const SignUpPage = async () => {
 
           <p className="text-center text-gray-500 mt-6">
             Already have an account?{' '}
-            <span
-              className="text-blue-600 hover:underline cursor-pointer"
-              onClick={() => router.push('/SignIn')}
-            >
-              Sign In
-            </span>
+
+            <Link href="/SignIn">
+              <span className="text-blue-600 hover:underline cursor-pointer">
+                Sign In
+              </span>
+            </Link>
           </p>
         </div>
       </div>
     </div>
   )
 }
+
 
 export default SignUpPage

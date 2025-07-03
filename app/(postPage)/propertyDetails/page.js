@@ -5,6 +5,7 @@ import '../../css/propertyDetails.css';
 import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ImageUploaderSection from '../../../components/ImageUploadSection';
 
 function PropertyDetails() {
     const [regionData, setRegionData] = useState({ region: '', municipal: '' });
@@ -18,13 +19,13 @@ function PropertyDetails() {
         area: '',
         propertyType: '',
     });
-    const [imageUrls, setImageUrls] = useState([]);
+    // const [imageUrls, setImageUrls] = useState([]);
 
     const router = useRouter();
 
-    const handleImageUpload = (url) => {
-        setImageUrls(prev => [...prev, url]);
-    };
+    // const handleImageUpload = (url) => {
+    //     setImageUrls(prev => [...prev, url]);
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,55 +42,39 @@ function PropertyDetails() {
         }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            if (
-                !houseDetails.title ||
-                !houseDetails.description ||
-                !houseDetails.price ||
-                !houseDetails.gps ||
-                !regionData.region ||
-                !regionData.municipal
-            ) {
-                alert("Please fill in all required fields.");
-                return;
-            }
-            // const { data: session } = await supabase.auth.getSession();
-            // const userEmail = session?.session?.user?.email;
-
-            const dataToInsert = {
-                title: houseDetails.title,
-                description: houseDetails.description,
-                price: houseDetails.price === "" ? null : Number(houseDetails.price),
-                gps: houseDetails.gps,
-                bedroom: houseDetails.bedroom === "" ? null : Number(houseDetails.bedroom),
-                bathroom: houseDetails.bathroom === "" ? null : Number(houseDetails.bathroom),
-                region: regionData.region,
-                municipal: regionData.municipal,
-                image_urls: imageUrls,
-                // userEmail: userEmail,
-            };
-const { error } = await supabase.from("apartment").insert([dataToInsert]);
-if (error) {
-    console.log('Supabase insert error:', error); // <-- log the full error
-}
-        } catch (err) {
-            // Optionally handle error
-            console.log('error', err.message)
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const user = await supabase.auth.getUser();
+        const userEmail = user.data.user?.email;
+    
+        const dataToInsert = {
+            title: houseDetails.title,
+            description: houseDetails.description,
+            price: houseDetails.price === '' ? null : Number(houseDetails.price),
+            gps: houseDetails.gps,
+            bedroom: houseDetails.bedroom === '' ? null : Number(houseDetails.bedroom),
+            bathroom: houseDetails.bathroom === '' ? null : Number(houseDetails.bathroom),
+            area: houseDetails.area === '' ? null : Number(houseDetails.area),
+            property_type: houseDetails.propertyType,
+            image_urls: houseDetails.image_urls, // <-- use the value from state
+            region: regionData.region,
+            municipal: regionData.municipal,
+            userEmail: userEmail,
+            created_at: new Date(),
+        };
+    
+        const { error } = await supabase.from('apartment').insert([dataToInsert]);
+    
+        if (!error) {
+            router.push('/userProfile');
+        } else {
+            console.log('Failed to post:', error.message);
         }
-        setHouseDetails({
-            title: '',
-            description: '',
-            price: '',
-            gps: '',
-            bedroom: '',
-            bathroom: '',
-            area: '',
-            propertyType: '',
-        });
-    };
+    } catch (err) {
+        console.error('Submission error:', err);
+    }
+};
 
     return (
         <>
@@ -253,7 +238,16 @@ if (error) {
                         <p className="image-title text-xs mb-2">
                             Upload high-quality images to showcase your property. First image will be used as the main photo.
                         </p>
-                        <ImageUploadSection onUpload={handleImageUpload} />
+
+                     <ImageUploaderSection
+  onUpload={(urls) =>
+    setHouseDetails((prev) => ({
+      ...prev,
+      image_urls: urls, // Make sure Supabase column is `text[]`
+    }))
+  }
+/>
+
                     </div>
                     <button
                         type="submit"
