@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 // import HeroSection from '@/components/HeroSection'
 
 const page = () => {
-  redirect('/SignUp')
+  redirect('/register')
   return null
 
 }
