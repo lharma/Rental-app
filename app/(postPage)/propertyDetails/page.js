@@ -5,9 +5,9 @@ import '../../css/propertyDetails.css';
 import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ImageUploaderSection from '../../../components/ImageUploadSection';
 
 function PropertyDetails() {
-   
     const [regionData, setRegionData] = useState({ region: '', municipal: '' });
     const [houseDetails, setHouseDetails] = useState({
         title: '',
@@ -19,12 +19,13 @@ function PropertyDetails() {
         area: '',
         propertyType: '',
     });
-    const [imageUrls, setImageUrls] = useState([]);
+    // const [imageUrls, setImageUrls] = useState([]);
 
     const router = useRouter();
-const handleImageUpload = (url) => {
-  setImageUrls(prev => [...prev, url]);
-};
+
+    // const handleImageUpload = (url) => {
+    //     setImageUrls(prev => [...prev, url]);
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,55 +42,51 @@ const handleImageUpload = (url) => {
         }));
     };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-    const dataToInsert = {
-        title: houseDetails.title,
-        description: houseDetails.description,
-        price: houseDetails.price === "" ? null : Number(houseDetails.price),
-        gps: houseDetails.gps,
-        bedroom: houseDetails.bedroom === "" ? null : Number(houseDetails.bedroom),
-        bathroom: houseDetails.bathroom === "" ? null : Number(houseDetails.bathroom),
-        region: regionData.region,
-        municipal: regionData.municipal,
-        image_urls: imageUrls, 
-    };
-
-    const { error } = await supabase.from("apartment").insert([dataToInsert]);
-
-    if (!error) {
-        router.push('/UserProfile')
-    }
-} catch (err) {
+        const user = await supabase.auth.getUser();
+        const userEmail = user.data.user?.email;
     
-}
-setHouseDetails({
-   title: '',
-description: '',
-price: '',
-gps: '',
-bedroom: '',
-bathroom: '',
-area: '',
-propertyType: '',
-})
+        const dataToInsert = {
+            title: houseDetails.title,
+            description: houseDetails.description,
+            price: houseDetails.price === '' ? null : Number(houseDetails.price),
+            gps: houseDetails.gps,
+            bedroom: houseDetails.bedroom === '' ? null : Number(houseDetails.bedroom),
+            bathroom: houseDetails.bathroom === '' ? null : Number(houseDetails.bathroom),
+            area: houseDetails.area === '' ? null : Number(houseDetails.area),
+            property_type: houseDetails.propertyType,
+            image_urls: houseDetails.image_urls, // <-- use the value from state
+            region: regionData.region,
+            municipal: regionData.municipal,
+            userEmail: userEmail,
+            created_at: new Date(),
+        };
+    
+        const { error } = await supabase.from('apartment').insert([dataToInsert]);
+    
+        if (!error) {
+            router.push('/userProfile');
+        } else {
+            console.log('Failed to post:', error.message);
+        }
+    } catch (err) {
+        console.error('Submission error:', err);
+    }
 };
-
 
     return (
         <>
             <div className="relative overflow-hidden flex justify-center bg-white">
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900/5 to-slate-800/5"></div>
-                <div className="relative px-4 py-4 sm:px-8 lg:px-12">
-                    <div className="mx-auto max-w-4xl text-center">
-                        <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
-                            List Your
-                            <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent"> </span>
-                            Property
-                        </h1>
-                    </div>
+                <div className="relative px-4 py-4 sm:px-8 lg:px-12"></div>
+                <div className="mx-auto max-w-4xl text-center">
+                    <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
+                        List Your
+                        <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent text-[]"> </span>
+                        Property
+                    </h1>
                 </div>
             </div>
 
@@ -202,7 +199,6 @@ propertyType: '',
                                 }`}
                                 onClick={() => handlePropertyTypeSelect('House')}
                             >
-                                <i className="ri-home-fill text-black text-2xl"></i>
                                 <span>House</span>
                             </button>
                             <button
@@ -212,7 +208,6 @@ propertyType: '',
                                 }`}
                                 onClick={() => handlePropertyTypeSelect('Apartment')}
                             >
-                                <i className="ri-building-fill text-black text-2xl"></i>
                                 <span>Apartment</span>
                             </button>
                         </div>
@@ -243,7 +238,16 @@ propertyType: '',
                         <p className="image-title text-xs mb-2">
                             Upload high-quality images to showcase your property. First image will be used as the main photo.
                         </p>
-                        <ImageUploadSection onUpload={handleImageUpload} />
+
+                     <ImageUploaderSection
+  onUpload={(urls) =>
+    setHouseDetails((prev) => ({
+      ...prev,
+      image_urls: urls, // Make sure Supabase column is `text[]`
+    }))
+  }
+/>
+
                     </div>
                     <button
                         type="submit"
